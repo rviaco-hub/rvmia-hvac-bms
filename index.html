@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>RVMIA BMS HVAC - Building Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i class="fas fa-wind"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-main">RVMIA</span>
+                    <span class="logo-sub">HVAC BMS</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-view="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-view="monitoring">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Monitoreo</span>
+                </a>
+                <a href="#" class="nav-item" data-view="control">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Control</span>
+                </a>
+                <a href="#" class="nav-item" data-view="trends">
+                    <i class="fas fa-chart-area"></i>
+                    <span>Tendencias</span>
+                </a>
+                <a href="#" class="nav-item" data-view="maintenance">
+                    <i class="fas fa-tools"></i>
+                    <span>Mantenimiento</span>
+                </a>
+                <a href="#" class="nav-item" data-view="configuration">
+                    <i class="fas fa-cog"></i>
+                    <span>Configuración</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="system-status">
+                    <i class="fas fa-circle online"></i>
+                    <span>Sistema Online</span>
+                </div>
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Admin HVAC</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- HEADER -->
+            <header class="top-header">
+                <div class="header-left">
+                    <h1 class="page-title">Dashboard General</h1>
+                    <p class="page-subtitle">Torre Corporativa Central - Sistema BMS HVAC</p>
+                </div>
+                <div class="header-right">
+                    <div class="weather-widget">
+                        <i class="fas fa-sun"></i>
+                        <div>
+                            <span class="temp">24°C</span>
+                            <span class="city">Bogotá</span>
+                        </div>
+                    </div>
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </div>
+                    <div class="date-time">
+                        <i class="far fa-calendar-alt"></i>
+                        <span id="currentDateTime"></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- DASHBOARD VIEW -->
+            <div id="dashboardView" class="view active">
+                <!-- STATS CARDS -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Equipos Activos</h3>
+                            <div class="stat-value">24<span>/32</span></div>
+                            <span class="stat-trend positive">+2 hoy</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-charging-station"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Consumo Energía</h3>
+                            <div class="stat-value">1,284<span> kWh</span></div>
+                            <span class="stat-trend negative">-8% vs ayer</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>COP Promedio</h3>
+                            <div class="stat-value">3.8<span>/5.0</span></div>
+                            <span class="stat-trend positive">Eficiente</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Alertas Activas</h3>
+                            <div class="stat-value">7<span> críticas</span></div>
+                            <span class="stat-trend negative">+3 hoy</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LIVE MAPA TÉRMICO / SISTEMAS -->
+                <div class="systems-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-map-marked-alt"></i> Mapa Térmico Edificio</h3>
+                            <button class="btn-icon"><i class="fas fa-expand"></i></button>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="thermalMapCanvas" width="600" height="300" style="width:100%; height:auto; background: linear-gradient(135deg, #1a2a3a, #0d1b2a); border-radius: 12px;"></canvas>
+                            <div class="legend">
+                                <span><i class="fas fa-square" style="color:#2ecc71;"></i> 18-20°C</span>
+                                <span><i class="fas fa-square" style="color:#f39c12;"></i> 21-23°C</span>
+                                <span><i class="fas fa-square" style="color:#e67e22;"></i> 24-26°C</span>
+                                <span><i class="fas fa-square" style="color:#e74c3c;"></i> >27°C</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-microchip"></i> Sistemas Principales</h3>
+                            <i class="fas fa-sync-alt fa-spin" style="opacity:0.5; font-size:0.9rem;"></i>
+                        </div>
+                        <div class="card-body">
+                            <div class="system-list">
+                                <div class="system-item">
+                                    <div class="system-icon"><i class="fas fa-temperature-low"></i></div>
+                                    <div class="system-details">
+                                        <h4>VRF Mitsubishi Electric</h4>
+                                        <p>Zona Norte - Oficinas</p>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 65%"></div>
+                                        </div>
+                                        <span class="load">Carga: 65% | COP: 3.9</span>
+                                    </div>
+                                    <div class="system-status-badge online">Online</div>
+                                </div>
+                                <div class="system-item">
+                                    <div class="system-icon"><i class="fas fa-tint"></i></div>
+                                    <div class="system-details">
+                                        <h4>Chiller Trane CenTraVac</h4>
+                                        <p>Planta Baja - Data Center</p>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 82%"></div>
+                                        </div>
+                                        <span class="load">Carga: 82% | COP: 3.2</span>
+                                    </div>
+                                    <div class="system-status-badge warning">Alerta</div>
+                                </div>
+                                <div class="system-item">
+                                    <div class="system-icon"><i class="fas fa-fan"></i></div>
+                                    <div class="system-details">
+                                        <h4>UTA Daikin + VFD</h4>
+                                        <p>Área Comercial - Ventilación</p>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 45%"></div>
+                                        </div>
+                                        <span class="load">Carga: 45% | COP: 4.2</span>
+                                    </div>
+                                    <div class="system-status-badge online">Online</div>
+                                </div>
+                                <div class="system-item">
+                                    <div class="system-icon"><i class="fas fa-door-open"></i></div>
+                                    <div class="system-details">
+                                        <h4>Cortinas de Aire</h4>
+                                        <p>Accesos principales</p>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 30%"></div>
+                                        </div>
+                                        <span class="load">Flujo: 30% | 6/8 activas</span>
+                                    </div>
+                                    <div class="system-status-badge online">Online</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TRENDING CHART -->
+                <div class="card full-width">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-line"></i> Tendencia Temperatura y Consumo (últimas 24h)</h3>
+                        <div>
+                            <button class="btn-small active">24h</button>
+                            <button class="btn-small">7d</button>
+                            <button class="btn-small">30d</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="trendChart" height="100"></canvas>
+                    </div>
+                </div>
+
+                <!-- ÚLTIMAS ALERTAS -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-bell"></i> Alertas Recientes</h3>
+                        <a href="#" class="link">Ver todas</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="alerts-list">
+                            <div class="alert-item critical">
+                                <i class="fas fa-fire-extinguisher"></i>
+                                <div class="alert-detail">
+                                    <strong>Alta presión en circuito 2</strong>
+                                    <p>Chiller Trane - Presión de descarga 380 psi (límite 350)</p>
+                                    <small>Hace 10 min</small>
+                                </div>
+                            </div>
+                            <div class="alert-item warning">
+                                <i class="fas fa-filter"></i>
+                                <div class="alert-detail">
+                                    <strong>Filtros saturados</strong>
+                                    <p>UTA Daikin Zona Sur - ΔP 180 Pa</p>
+                                    <small>Hace 45 min</small>
+                                </div>
+                            </div>
+                            <div class="alert-item info">
+                                <i class="fas fa-charging-station"></i>
+                                <div class="alert-detail">
+                                    <strong>Pico de demanda eléctrica</strong>
+                                    <p>Consumo pico 124 kW a las 14:30</p>
+                                    <small>Hace 2h</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI MANTENIMIENTO -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-pie"></i> KPIs Mantenimiento Predictivo</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="kpi-grid">
+                            <div>
+                                <div class="kpi-label">Score General</div>
+                                <div class="kpi-value large">87<span>/100</span></div>
+                                <div class="progress-ring">
+                                    <svg width="80" height="80" viewBox="0 0 80 80">
+                                        <circle cx="40" cy="40" r="35" fill="none" stroke="#e0e0e0" stroke-width="6"/>
+                                        <circle cx="40" cy="40" r="35" fill="none" stroke="#2ecc71" stroke-width="6" stroke-dasharray="219.8" stroke-dashoffset="28.6" transform="rotate(-90 40 40)"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="kpi-label">Horas Compresor</div>
+                                <div class="kpi-value">8,432</div>
+                                <span class="kpi-trend">Vida útil 92%</span>
+                            </div>
+                            <div>
+                                <div class="kpi-label">Próximo Cambio Filtros</div>
+                                <div class="kpi-value">15<span> días</span></div>
+                            </div>
+                            <div>
+                                <div class="kpi-label">Eficiencia Energética</div>
+                                <div class="kpi-value">B+</div>
+                                <span class="kpi-trend">-5% vs objetivo</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MONITORING VIEW (simplificado pero real) -->
+            <div id="monitoringView" class="view">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-tachometer-alt"></i> Monitoreo en Tiempo Real</h3>
+                        <span class="live-badge"><i class="fas fa-circle"></i> LIVE</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="monitoring-grid" id="monitoringGrid">
+                            <!-- JS generará sensores en vivo -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTROL VIEW -->
+            <div id="controlView" class="view">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-sliders-h"></i> Control de Variables</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="control-panels" id="controlPanels">
+                            <!-- Cada equipo tiene su propio panel de control -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRENDS VIEW -->
+            <div id="trendsView" class="view">
+                <div class="card full-width">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-line"></i> Tendencias Históricas</h3>
+                        <div>
+                            <select id="trendMetric" class="select-sm">
+                                <option value="temp">Temperatura Interior</option>
+                                <option value="power">Consumo Energético</option>
+                                <option value="cop">COP</option>
+                            </select>
+                            <select id="trendPeriod" class="select-sm">
+                                <option value="week">Última Semana</option>
+                                <option value="month">Último Mes</option>
+                                <option value="year">Último Año</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="historicalChart" height="120"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAINTENANCE VIEW -->
+            <div id="maintenanceView" class="view">
+                <div class="card full-width">
+                    <div class="card-header">
+                        <h3><i class="fas fa-clipboard-list"></i> Plan de Mantenimiento Predictivo</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="maintenance-schedule">
+                            <div class="task-card">
+                                <i class="fas fa-filter"></i>
+                                <div><strong>Cambio de filtros UTA-01</strong><br>Vence en 12 días</div>
+                                <span class="priority high">Alta</span>
+                            </div>
+                            <div class="task-card">
+                                <i class="fas fa-oil-can"></i>
+                                <div><strong>Lubricación compresores VRF</strong><br>Vence en 25 días</div>
+                                <span class="priority medium">Media</span>
+                            </div>
+                            <div class="task-card">
+                                <i class="fas fa-bolt"></i>
+                                <div><strong>Revisión VFD Torre Norte</strong><br>Vence en 7 días</div>
+                                <span class="priority high">Alta</span>
+                            </div>
+                            <div class="task-card">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <div><strong>Calibración sensores presión</strong><br>Vence en 45 días</div>
+                                <span class="priority low">Baja</span>
+                            </div>
+                        </div>
+                        <div class="insight-box">
+                            <i class="fas fa-robot"></i>
+                            <p><strong>Insight IA:</strong> Se detecta degradación del 12% en eficiencia del Chiller Trane. Recomendación: limpieza de condensador y revisión de refrigerante en los próximos 15 días.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONFIG VIEW -->
+            <div id="configurationView" class="view">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-cog"></i> Configuración de Sistema</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="configForm">
+                            <div class="form-group">
+                                <label>Nombre Edificio</label>
+                                <input type="text" value="Torre Corporativa Central" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Modo Operación General</label>
+                                <select class="form-control">
+                                    <option>Auto (Verano/Invierno)</option>
+                                    <option>Solo Frío</option>
+                                    <option>Solo Calor</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Límite Máximo Demanda (kW)</label>
+                                <input type="number" value="180" class="form-control">
+                            </div>
+                            <button class="btn-primary">Guardar Cambios</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
